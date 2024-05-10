@@ -19,8 +19,8 @@ library(dplyr)
 cl <- detectCores() - 1
 
 # source files
-source("/Users/brad0317/Documents/Papers/Statistics/new_lmer_AIC_tables3.R") # change path as required
-source("/Users/brad0317/Documents/Papers/Statistics/r.squared.R") # change path as required
+source("new_lmer_AIC_tables3.R")
+source("r.squared.R")
 
 # functions
 AICc <- function(...) {
@@ -55,7 +55,6 @@ linreg.ER <- function(x,y) { # where x and y are vectors of the same length; cal
 }
 
 # import data
-setwd("~/Documents/Papers/Palaeo/Siluro-Devonian")
 dat <- read.table("sildevcomp2.txt", sep="\t", header=T, as.is=T)
 colnames(dat)
 head(dat)
@@ -2397,5 +2396,3 @@ rownames(geol.xtabs) <- colnames(geoltax.full[7:dim(geoltax.full)[2]])
 geol.xtabs
 
 write.table(geol.xtabs, "geolxtabs.csv", sep=",", row.names = T)
-
-save.image("~/Documents/Papers/Palaeo/Siluro-Devonian/silurodev.RData")
