@@ -2,6 +2,7 @@
 <a href="https://www.ucy.ac.cy/migrate/"><img align="right" src="www/MigratelogoShad.png" width="200" style="margin-top: 20px"></a>
 Lithic and temporal variation predict composition of Siluro-Devonian vertebrate, invertebrate, and plant communities
 <br>
+<br>
 lead: Professor <a href="https://globalecologyflinders.com/people/#DIRECTOR">Corey Bradshaw</a><br>
 collaborators: <a href="https://www.uqar.ca/universite/a-propos-de-l-uqar/departements/departement-de-biologie-chimie-et-geographie/cloutier-richard">Richard Cloutier</a>, <a href="https://prc.msu.ac.th/eng/personnel-palaeontological-research-and-education-centre-msu/">Clive Burrett</a>, <a href="https://prc.msu.ac.th/eng/personnel-palaeontological-research-and-education-centre-msu/">Mongkol Udchachon</a>
 <br>
