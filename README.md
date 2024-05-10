@@ -1,5 +1,5 @@
 # Siluro-Devonian Communities
-<a href="https://www.ucy.ac.cy/migrate/"><img align="right" src="www/MigratelogoShad.png" width="200" style="margin-top: 20px"></a>
+<img align="right" src="www/ageyr perm.jpg" width="100" style="margin-top: 20px"></a>
 Lithic and temporal variation predict composition of Siluro-Devonian vertebrate, invertebrate, and plant communities
 <br>
 <br>
