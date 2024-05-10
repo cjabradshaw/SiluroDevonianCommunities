@@ -1,5 +1,5 @@
 # Siluro-Devonian Communities
-<img align="right" src="www/ageyr perm.jpg" width="300" style="margin-top: 20px"></a>
+<img align="right" src="www/ageyr perm.jpg" width="500" style="margin-top: 20px"></a>
 Lithic and temporal variation predict composition of Siluro-Devonian vertebrate, invertebrate, and plant communities
 <br>
 <br>
