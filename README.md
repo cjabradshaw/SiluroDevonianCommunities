@@ -17,7 +17,7 @@ While vertebrate communities of the Siluro-Devonian have been well-described, co
 ## <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data">Data</a>
 - <em>sildevcomp2.txt</em>: fossiliferous site database
 
-## R (v4.3.2) libraries
+## R libraries
 <code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>
 
 <br>
