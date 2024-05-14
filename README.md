@@ -13,13 +13,17 @@ While Siluro-Devonian vertebrate communities have been well-described, co-variat
 - <code>silurodev.R</code>: main code to generate results
 - <code>r.squared.R</code>: functions to estimate goodness of fit for linear models
 - <code>new_lmer_AIC_tables3.r</code>: functions to compare linear models
-- <code>palaeocoords.ipynb</code>: Jupyter Notebook with Python code to project current-era lat/lon coordinates to palaeo-coordinates, with corresponding plate tectonics, for anytime in the last 1 billion years (modified code supplied by @amer7632)
+- <code>palaeocoords.ipynb</code>: Jupyter Notebook with Python code to project current-era lat/lon coordinates to palaeo-coordinates, with corresponding plate tectonics, for anytime in the last 1 billion years (modified code supplied by @<a href="https://github.com/amer7632">amer7632</a>; detailed instructions <a href="https://github.com/GPlates/gplately/blob/master/Notebooks/03-WorkingWithPoints.ipynb">here</a>)
 
 ## <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data">Data</a>
 - <em>sildevcomp2.txt</em>: fossiliferous site database
 
 ## R libraries
 <code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>
+
+## GPlately
+Install <code><a href="https://github.com/GPlates/gplately?tab=readme-ov-file">GPlately</a></code>, a Python interface to accelerate spatio-temporal data analysis leveraging <code><a href="https://www.gplates.org/docs/pygplates/index.html">pyGPlates</a></code> and <code><a href="https://github.com/EarthByte/PlateTectonicTools">PlateTectonicTools</a></code>
+(references: <a href="https://doi.org/10.1002/gdj3.185">Mather et al.</a> 2024 <em>Geosciences Data Journal</em> 11:3-10)
 
 ## Python dependencies
 <code><a href="https://www.gplates.org/docs/pygplates/pygplates_getting_started.html#installation">pyGPlates</a></code>, <code><a href="https://pypi.org/project/plate-model-manager/">plate-model-manager</a></code>, <code><a href="https://shapely.readthedocs.io/en/stable/project.html#installing-shapely">Shapely</a></code>, <code><a href="https://numpy.org/install/">NumPy</a></code>. <code><a href="https://scipy.org/install/">SciPy</a></code>, <code><a href="https://matplotlib.org/stable/users/installing/index.html">Matplotlib</a></code>, <code><a href="https://scitools.org.uk/cartopy/docs/latest/index.html#getting-started">Cartopy</a></code>, <code><a href="https://github.com/fatiando/pooch">Pooch</a></code>, <code><a href="https://geopandas.org/en/stable/getting_started.html">GeoPandas</a></code>, <code><a href="https://unidata.github.io/netcdf4-python/#quick-install">netCDF4</a></code>
