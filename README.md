@@ -18,7 +18,7 @@ While Siluro-Devonian vertebrate communities have been well-described, co-variat
 ## <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data">Data</a>
 - <em>sildevcomp2.txt</em>: fossiliferous site database
 - <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data/plate-model-repo/">plate-model-repo</a>: data for hindcasted tectonic reconstruction and generation of palaeo coordinates (maintain sub-folder hierarchy & unzip files in 'Topologies' sub-folder)
-- <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data/sitecoords/">sitecoords</a>: .csv files with site coordinates —- all: <em>sitelocs.csv</em>; and divided by major period: Silurian (SIL), Lochkovian (LOCH), Emsian (EMS), Eifelian (EIF), Givetian (GIV), Frasnian (FRAS), Famennian (FAM)
+- <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data/sitecoords/">sitecoords</a>: .csv files with site coordinates — all: <em>sitelocs.csv</em>; and divided by major period: Silurian (SIL), Lochkovian (LOCH), Emsian (EMS), Eifelian (EIF), Givetian (GIV), Frasnian (FRAS), Famennian (FAM)
 <img align="right" src="www/FAMsites.jpg" width="400" style="margin-top: 20px"></a>
 
 ## R libraries
