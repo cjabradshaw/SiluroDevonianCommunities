@@ -18,7 +18,7 @@ While Siluro-Devonian vertebrate communities have been well-described, co-variat
 ## <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data">Data</a>
 - <em>sildevcomp2.txt</em>: fossiliferous site database
 - <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data/plate-model-repo/">plate-model-repo</a>: data for hindcasted tectonic reconstruction and generation of palaeo coordinates (maintain sub-folder hierarchy & unzip files in 'Topologies' sub-folder) 
-<img align="right" src="www/FAMsites.png" width="400" style="margin-top: 20px"></a>
+<img align="right" src="www/FAMsites.jpg" width="400" style="margin-top: 20px"></a>
 
 ## R libraries
 <code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>
