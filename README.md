@@ -17,13 +17,14 @@ While Siluro-Devonian vertebrate communities have been well-described, co-variat
 
 ## <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data">Data</a>
 - <em>sildevcomp2.txt</em>: fossiliferous site database
+- <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data/plate-model-repo/">plate-model-repo</a>: data for hindcasted tectonic reconstruction and generation of palaeo coordinates (maintain sub-folder hierarchy & unzip files in 'Topologies' sub-folder) 
 
 ## R libraries
 <code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>
 
 ## GPlately
 Install <code><a href="https://github.com/GPlates/gplately?tab=readme-ov-file">GPlately</a></code>, a Python interface to accelerate spatio-temporal data analysis leveraging <code><a href="https://www.gplates.org/docs/pygplates/index.html">pyGPlates</a></code> and <code><a href="https://github.com/EarthByte/PlateTectonicTools">PlateTectonicTools</a></code>
-(references: <a href="https://doi.org/10.1016/j.earscirev.2020.103477">Mather et al.</a>Merdith et al.</a> 2021 <em>Earth-Sci Rev</em> 214:103477; <a href="https://doi.org/10.1002/gdj3.185">Mather et al.</a> 2024 <em>Geosciences Data Journal</em> 11:3-10)
+(references: <a href="https://doi.org/10.1016/j.earscirev.2020.103477">Merdith et al.</a> 2021 <em>Earth-Sci Rev</em> 214:103477; <a href="https://doi.org/10.1002/gdj3.185">Mather et al.</a> 2024 <em>Geosciences Data Journal</em> 11:3-10)
 
 ## Python dependencies
 <code><a href="https://www.gplates.org/docs/pygplates/pygplates_getting_started.html#installation">pyGPlates</a></code>, <code><a href="https://pypi.org/project/plate-model-manager/">plate-model-manager</a></code>, <code><a href="https://shapely.readthedocs.io/en/stable/project.html#installing-shapely">Shapely</a></code>, <code><a href="https://numpy.org/install/">NumPy</a></code>. <code><a href="https://scipy.org/install/">SciPy</a></code>, <code><a href="https://matplotlib.org/stable/users/installing/index.html">Matplotlib</a></code>, <code><a href="https://scitools.org.uk/cartopy/docs/latest/index.html#getting-started">Cartopy</a></code>, <code><a href="https://github.com/fatiando/pooch">Pooch</a></code>, <code><a href="https://geopandas.org/en/stable/getting_started.html">GeoPandas</a></code>, <code><a href="https://unidata.github.io/netcdf4-python/#quick-install">netCDF4</a></code>
