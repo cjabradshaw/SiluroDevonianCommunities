@@ -13,12 +13,16 @@ While Siluro-Devonian vertebrate communities have been well-described, co-variat
 - <code>silurodev.R</code>: main code to generate results
 - <code>r.squared.R</code>: functions to estimate goodness of fit for linear models
 - <code>new_lmer_AIC_tables3.r</code>: functions to compare linear models
+- <code>palaeocoords.ipynb</code>: Jupyter Notebook with Python code to project current-era lat/lon coordinates to palaeo-coordinates, with corresponding plate tectonics, for anytime in the last 1 billion years (modified code supplied by @amer7632)
 
 ## <a href="https://github.com/cjabradshaw/SiluroDevonianCommunities/tree/main/data">Data</a>
 - <em>sildevcomp2.txt</em>: fossiliferous site database
 
 ## R libraries
 <code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>
+
+## Python dependencies
+<code><a href="https://www.gplates.org/docs/pygplates/pygplates_getting_started.html#installation">pyGPlates</a></code>
 
 <br>
 <a href="https://www.flinders.edu.au"><img align="bottom-left" src="www/Flinders_University_Logo_Horizontal_RGB_Master.png" alt="Flinders University logo" height="40" style="margin-top: 20px"></a> &nbsp; <a href="https://globalecologyflinders.com"><img align="bottom-left" src="www/GEL Logo Kaurna New Transp-2.png" alt="GEL logo" height="85" style="margin-top: 20px"></a> &nbsp; <a href="https://www.uqar.ca"><img align="bottom-left" src="www/UQARlogo.png" alt="CUT logo" height="70" style="margin-top: 20px"></a><a href="https://www.msu.ac.th/eng/"><img align="bottom-left" src="www/MahasarakhamUlogo.png" alt="CGS logo" height="95" style="margin-top: 20px"></a></p>
