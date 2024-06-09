@@ -1,6 +1,6 @@
 ## Siluro-Devonian vertebrate/invertebrate/plant geological determinants of presence
 ## Corey Bradshaw & Richard Cloutier
-## May 2024
+## May/June 2024
 
 rm(list = ls())
 
@@ -19,8 +19,8 @@ library(dplyr)
 cl <- detectCores() - 1
 
 # source files
-source("new_lmer_AIC_tables3.R")
-source("r.squared.R")
+source("new_lmer_AIC_tables3.R") # change path as required
+source("r.squared.R") # change path as required
 
 # functions
 AICc <- function(...) {
@@ -55,9 +55,10 @@ linreg.ER <- function(x,y) { # where x and y are vectors of the same length; cal
 }
 
 # import data
-dat <- read.table("sildevcomp2.txt", sep="\t", header=T, as.is=T)
+dat <- read.table("sildevcomp4.txt", sep="\t", header=T, as.is=T)
 colnames(dat)
 head(dat)
+dim(dat)
 
 ###############
 ## vertebrates 
@@ -1191,34 +1192,86 @@ plot_model(LateDev.fit, show.values=T, vline.color = "purple")
 ###############################
 ## split by palaeo-environment
 ###############################
-mar.ind <- grep("marin", dat$Environnement_interpretation, ignore.case=T)
-mar.ind <- mar.ind[-18]
-dat[mar.ind,]$Environnement_interpretation
-dat2 <- dat[-mar.ind,]
+table(dat$Environment_interpretation)
+sum(table(dat$Environment_interpretation))
 
-alluv.ind <- grep("alluv", dat2$Environnement_interpretation, ignore.case=T)
-dat2[alluv.ind,]$Environnement_interpretation
+# marine
+mar.ind <- grep("marin", dat$Environment_interpretation, ignore.case=T)
+dat[mar.ind,]$Environment_interpretation
+reef.ind <- grep("reef", dat$Environment_interpretation, ignore.case=T, fixed=T)
+reef.ind <- reef.ind[-2]
+dat[reef.ind,]$Environment_interpretation
+tidal.ind <- grep("tidal", dat$Environment_interpretation, ignore.case=T)
+tidal.ind <- tidal.ind[-4]
+dat[tidal.ind,]$Environment_interpretation
+shallsea.ind <- grep("shallow", dat$Environment_interpretation, ignore.case=T)
+shallsea.ind <- shallsea.ind[-(grep("marin", dat[shallsea.ind,]$Environment_interpretation, ignore.case=T))]
+dat[shallsea.ind,]$Environment_interpretation
+offshore.ind <- grep("offshore", dat$Environment_interpretation, ignore.case=T)
+dat[offshore.ind,]$Environment_interpretation
+epicont.ind <- grep("epicont", dat$Environment_interpretation, ignore.case=T)
+dat[epicont.ind,]$Environment_interpretation
+lagoon.ind <- grep("lagoon", dat$Environment_interpretation, ignore.case=T)
+lagoon.ind <- lagoon.ind[3]
+dat[lagoon.ind,]$Environment_interpretation
 
-delt.ind <- grep("delt", dat2$Environnement_interpretation, ignore.case=T)
-dat2[delt.ind,]$Environnement_interpretation
+dat.mar <- dat[c(mar.ind,reef.ind,tidal.ind,shallsea.ind,offshore.ind,epicont.ind,lagoon.ind),]
+dim(dat.mar)[1]
 
-alluvdelt.ind <- sort(c(alluv.ind, delt.ind))
-dat2[alluvdelt.ind,]$Environnement_interpretation
-dat3 <- dat2[-alluvdelt.ind,]
+dat2 <- dat[-c(mar.ind,reef.ind,tidal.ind,shallsea.ind,offshore.ind,epicont.ind,lagoon.ind),]
+dim(dat2)[1]
+table(dat2$Environment_interpretation)
 
-fresh.ind <- grep("fresh", dat3$Environnement_interpretation, ignore.case=T)
-dat3[fresh.ind,]$Environnement_interpretation
+## alluvial/deltaic
+alluv.ind <- grep("alluv", dat2$Environment_interpretation, ignore.case=T)
+dat2[alluv.ind,]$Environment_interpretation
+delt.ind <- grep("delt", dat2$Environment_interpretation, ignore.case=T)
+dat2[delt.ind,]$Environment_interpretation
+dat.alluvdelt <- dat2[c(alluv.ind,delt.ind),]
 
-estuar.ind <- grep("estuar", dat3$Environnement_interpretation, ignore.case=T)
-freshestuar.ind <- sort(c(fresh.ind, estuar.ind))
-dat3[freshestuar.ind,]$Environnement_interpretation
+dat3 <- dat2[-c(alluv.ind,delt.ind),]
+dim(dat3)[1]
+table(dat3$Environment_interpretation)
 
+# freshwater/estuarine
+fresh.ind <- grep("fresh", dat3$Environment_interpretation, ignore.case=T)
+dat3[fresh.ind,]$Environment_interpretation
+
+estuar.ind <- grep("estuar", dat3$Environment_interpretation, ignore.case=T)
+dat3[estuar.ind,]$Environment_interpretation
+
+lake.ind <- grep("lake", dat3$Environment_interpretation, ignore.case=T)
+dat3[lake.ind,]$Environment_interpretation
+
+lacust.ind <- grep("lacust", dat3$Environment_interpretation, ignore.case=T)
+dat3[lacust.ind,]$Environment_interpretation
+
+fluv.ind <- grep("fluv", dat3$Environment_interpretation, ignore.case=T)
+fluv.ind <- fluv.ind[-1]
+dat3[fluv.ind,]$Environment_interpretation
+
+stream.ind <- grep("stream", dat3$Environment_interpretation, ignore.case=T)
+dat3[stream.ind,]$Environment_interpretation
+
+river.ind <- grep("river", dat3$Environment_interpretation, ignore.case=T)
+river.ind <- river.ind[-2]
+dat3[river.ind,]$Environment_interpretation
+
+floodpl.ind <- grep("floodpl", dat3$Environment_interpretation, ignore.case=T)
+dat3[floodpl.ind,]$Environment_interpretation
+
+dat.freshwestuar <- dat3[c(fresh.ind,estuar.ind,lake.ind,lacust.ind,fluv.ind,stream.ind,river.ind,floodpl.ind),]
+
+# check
+dat4 <- dat3[-c(fresh.ind,estuar.ind,lake.ind,lacust.ind,fluv.ind,stream.ind,river.ind,floodpl.ind),]
+dat4$Environment_interpretation
+dim(dat4)
 
 ##########
 ## marine
 ##########
-mar.dat <- dat[mar.ind,]
-dim(mar.dat)
+mar.dat <- dat.mar
+dim(mar.dat)[1]
 
 ###############
 ## vertebrates 
@@ -1440,7 +1493,7 @@ plot_model(mar.fit, show.values=T, vline.color = "purple")
 ####################
 ## alluvial/deltaic
 ####################
-alluvdelt.dat <- dat[alluvdelt.ind,]
+alluvdelt.dat <- dat.alluvdelt
 dim(alluvdelt.dat)
 
 ###############
@@ -1662,7 +1715,7 @@ plot_model(alluvdelt.fit, show.values=T, vline.color = "purple")
 ########################
 ## freshwater/estuarine
 ########################
-freshestuar.dat <- dat[freshestuar.ind,]
+freshestuar.dat <- dat.freshwestuar
 dim(freshestuar.dat)
 
 ###############
@@ -1881,6 +1934,7 @@ check_model(freshestuar.fit)
 plot_model(freshestuar.fit, show.values=T, vline.color = "purple")
 
 
+
 ## permutation test
 # taxa
 vertcolnames
@@ -1896,23 +1950,27 @@ geol.sub <- c(which(colnames(dat)=="Conglomerate"), which(colnames(dat)=="Sandst
               which(colnames(dat)=="Siltstone"), which(colnames(dat)=="Shale"),
               which(colnames(dat)=="Mudstone"), which(colnames(dat)=="Limestone"))
 dat[,geol.sub]
+geol.dat <- dat[,geol.sub]
 head(geol.dat)
 geolpc.sub <- c(which(colnames(dat)=="X._conglomerate"), which(colnames(dat)=="X._sandstone"), 
                 which(colnames(dat)=="X._siltstone"), which(colnames(dat)=="X._shale"),
                 which(colnames(dat)=="X._mudstone"), which(colnames(dat)=="X._limestone"))
 
-table(dat$lDominant_lith)
-dat$lDominant_lith <- revalue(dat$lDominant_lith, c("CON" = "cng",
+table(dat$Dominant)
+dat$Dominant <- revalue(dat$Dominant, c("CON" = "cng",
                               "LIM" = "lim",
                               "MUD" = "mud",
                               "SAN" = "snd",
                               "SHA" = "shl",
+                              "SHA " = "shl",
                               "SHA LIM" = "shllim",
                               "SHA SAN" = "shlsnd",
                               "SHA SIL" = "shlslt",
+                              "SAN SHA" = "sndshl",
+                              "SAN SIL" = "sndslt",
                               "SIL" = "slt"))
-table(dat$lDominant_lith)
-domlith.sub <- which(colnames(dat)=="lDominant_lith")
+table(dat$Dominant)
+domlith.sub <- which(colnames(dat)=="Dominant")
 geol.dat <- dat[, c(geol.sub, domlith.sub)]
 head(geol.dat)
 
@@ -1925,6 +1983,7 @@ geolpc.dat$X._shale <- as.numeric(geolpc.dat$X._shale)
 geolpc.dat$X._mudstone <- as.numeric(geolpc.dat$X._mudstone)
 geolpc.dat$X._limestone <- as.numeric(geolpc.dat$X._limestone)
 str(geolpc.dat)
+head(geolpc.dat)
 
 geolpc.dom <- apply(geolpc.dat, MARGIN=1, max, na.rm=T)
 geolpc.dom[which(geolpc.dom == -Inf)] <- NA
@@ -1933,7 +1992,7 @@ geolpc.dom
 
 geol.comb <- geoldom.cat <- rep(NA,length(geolpc.dom))
 for (i in 1:length(geolpc.dom)) {
-   geoldom.cat[i] <- geolpc$lDominant_lith[i]
+   geoldom.cat[i] <- geol.dat$Dominant[i]
    geol.comb[i] <- paste(geolID[which(geol.dat[i,]==1)], collapse="")
    geol.comb[i] <- ifelse(is.na(geoldom.cat[i])==F, geoldom.cat[i], geol.comb[i])
 }
@@ -2122,12 +2181,13 @@ factlev.sort
 
 # percentages per taxon & epoch
 # epoch
-dim(dat.reclass)[2]
-epoch.xtabs <- matrix(data=NA, ncol=4, nrow=dim(dat.reclass)[2] - 3)
-for (x in 4:(length(colnames(dat.reclass[3:dim(dat.reclass)[2]]))+2)) {
-  epoch.xtabs[x-3,] <- xtabs(dat.reclass[,x] ~ dat.reclass$percat)/sum(dat.reclass[,x], na.rm=T)
+dat.reclass.red.zero
+dim(dat.reclass.red.zero)[2]
+epoch.xtabs <- matrix(data=NA, ncol=4, nrow=dim(dat.reclass.red.zero)[2] - 3)
+for (x in 4:(length(colnames(dat.reclass.red.zero[3:dim(dat.reclass.red.zero)[2]]))+2)) {
+  epoch.xtabs[x-3,] <- xtabs(dat.reclass.red.zero[,x] ~ dat.reclass.red.zero$percat)/sum(dat.reclass.red.zero[,x], na.rm=T)
 }
-colnames(epoch.xtabs) <- c("LowDev", "MidDev", "Silur", "UppDev")
+colnames(epoch.xtabs) <- c("LowDev", "UppDev", "MidDev", "Silur")
 rownames(epoch.xtabs) <- colnames(dat.reclass[4:dim(dat.reclass)[2]])
 epoch.xtabs
 
@@ -2135,9 +2195,10 @@ write.table(epoch.xtabs, "epochxtabs.csv", sep=",", row.names = T)
 
 # geology
 geolcols <- c(15,17,19,21,23,25)
-geoltax.full <- data.frame(dat[,geolcols], dat[,vertcols], dat[,invcols], dat[,plntcols[-length(plntcols)]])
-colnames(geoltax.full) <- c(colnames(dat[,geolcols], ), colnames(dat[,vertcols], ), colnames(dat[,invcols], ),
+geoltax.full1 <- data.frame(dat[,geolcols], dat[,vertcols], dat[,invcols], dat[,plntcols[-length(plntcols)]])
+colnames(geoltax.full1) <- c(colnames(dat[,geolcols], ), colnames(dat[,vertcols], ), colnames(dat[,invcols], ),
                             colnames(dat[,plntcols[-length(plntcols)]], ))
+geoltax.full <- geoltax.full1 %>% replace(is.na(.), 0)
 head(geoltax.full)
 
 dim(geoltax.full)[2]
@@ -2327,7 +2388,7 @@ vert.reclass2 <- dat.reclass2[,vertcols2]
 grp.xtabs.names <- paste(colnames(vert.reclass2), ".ageXtabs", sep="")
 
 for (g in 1:length(grp.xtabs.names)) {
-  grp.it <- as.data.frame(xtabs(vert.reclass2[,g] ~ dat.reclass2[,2]))
+  grp.it <- as.data.frame(xtabs(vert.reclass2[,g] ~ dat.reclass2[,2], na.action = "na.omit"))
   colnames(grp.it) <- c("ageyr","freq")
   grp.it$ageyr <- as.double(as.character(grp.it$ageyr))
   grp.it$freq <- ifelse(grp.it$freq == 0, "NA", grp.it$freq)
@@ -2342,7 +2403,7 @@ inv.reclass2 <- dat.reclass2[,invcols2]
 grp.xtabs.names <- paste(colnames(inv.reclass2), ".ageXtabs", sep="")
 
 for (g in 1:length(grp.xtabs.names)) {
-  grp.it <- as.data.frame(xtabs(inv.reclass2[,g] ~ dat.reclass2[,2]))
+  grp.it <- as.data.frame(xtabs(inv.reclass2[,g] ~ dat.reclass2[,2], na.action = "na.omit"))
   colnames(grp.it) <- c("ageyr","freq")
   grp.it$ageyr <- as.double(as.character(grp.it$ageyr))
   grp.it$freq <- ifelse(grp.it$freq == 0, "NA", grp.it$freq)
@@ -2357,7 +2418,7 @@ plnt.reclass2 <- dat.reclass2[,plntcols2]
 grp.xtabs.names <- paste(colnames(plnt.reclass2), ".ageXtabs", sep="")
 
 for (g in 1:length(grp.xtabs.names)) {
-  grp.it <- as.data.frame(xtabs(plnt.reclass2[,g] ~ dat.reclass2[,2]))
+  grp.it <- as.data.frame(xtabs(plnt.reclass2[,g] ~ dat.reclass2[,2], na.action = "na.omit"))
   colnames(grp.it) <- c("ageyr","freq")
   grp.it$ageyr <- as.double(as.character(grp.it$ageyr))
   grp.it$freq <- ifelse(grp.it$freq == 0, "NA", grp.it$freq)
@@ -2367,32 +2428,5 @@ for (g in 1:length(grp.xtabs.names)) {
 }
 
 
-# geology
-geolcols <- c(15,17,19,21,23,25)
-geoltax.full <- data.frame(dat[,geolcols], dat[,vertcols], dat[,invcols], dat[,plntcols[-length(plntcols)]])
-colnames(geoltax.full) <- c(colnames(dat[,geolcols], ), colnames(dat[,vertcols], ), colnames(dat[,invcols], ),
-                            colnames(dat[,plntcols[-length(plntcols)]], ))
-head(geoltax.full)
+save.image("silurodev.RData")
 
-dim(geoltax.full)[2]
-geol.xtabs <- matrix(data=NA, ncol=6, nrow=dim(geoltax.full)[2] - 6)
-for (x in 7:(length(colnames(geoltax.full[7:dim(geoltax.full)[2]]))+6)) {
-  geol.xtabs[x-6,1] <- as.numeric((xtabs(geoltax.full[,x] ~ geoltax.full[,x-6])/
-                                     sum(xtabs(geoltax.full[,x] ~ geoltax.full[,x-6])))[2])
-  geol.xtabs[x-6,2] <- as.numeric((xtabs(geoltax.full[,x] ~ geoltax.full[,x-5])/
-                                     sum(xtabs(geoltax.full[,x] ~ geoltax.full[,x-5])))[2])
-  geol.xtabs[x-6,3] <- as.numeric((xtabs(geoltax.full[,x] ~ geoltax.full[,x-4])/
-                                     sum(xtabs(geoltax.full[,x] ~ geoltax.full[,x-4])))[2])
-  geol.xtabs[x-6,4] <- as.numeric((xtabs(geoltax.full[,x] ~ geoltax.full[,x-3])/
-                                     sum(xtabs(geoltax.full[,x] ~ geoltax.full[,x-3])))[2])
-  geol.xtabs[x-6,5] <- as.numeric((xtabs(geoltax.full[,x] ~ geoltax.full[,x-2])/
-                                     sum(xtabs(geoltax.full[,x] ~ geoltax.full[,x-2])))[2])
-  geol.xtabs[x-6,6] <- as.numeric((xtabs(geoltax.full[,x] ~ geoltax.full[,x-1])/
-                                     sum(xtabs(geoltax.full[,x] ~ geoltax.full[,x-1])))[2])
-}
-
-colnames(geol.xtabs) <- c("cng","snd","slt","shl","mud","lim")
-rownames(geol.xtabs) <- colnames(geoltax.full[7:dim(geoltax.full)[2]])
-geol.xtabs
-
-write.table(geol.xtabs, "geolxtabs.csv", sep=",", row.names = T)
