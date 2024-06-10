@@ -3,7 +3,7 @@
 Lithofacies and temporal variation predict composition of Siluro-Devonian vertebrate, invertebrate, and plant communities
 <br>
 <br>
-lead: Professor <a href="https://globalecologyflinders.com/people/#DIRECTOR">Corey Bradshaw</a><br>
+lead: <a href="https://globalecologyflinders.com/people/#DIRECTOR">Corey Bradshaw</a><br>
 collaborators: <a href="https://www.uqar.ca/universite/a-propos-de-l-uqar/departements/departement-de-biologie-chimie-et-geographie/cloutier-richard">Richard Cloutier</a>, <a href="https://prc.msu.ac.th/eng/personnel-palaeontological-research-and-education-centre-msu/">Clive Burrett</a>, <a href="https://prc.msu.ac.th/eng/personnel-palaeontological-research-and-education-centre-msu/">Mongkol Udchachon</a>, <a href="https://www.uu.se/en/contact-and-organisation/staff?query=N3-984">Per Ahlberg</a>, <a href="https://www.flinders.edu.au/people/john.long">John Long</a>
 <br>
 ## Abstract
