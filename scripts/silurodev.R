@@ -15,6 +15,9 @@ library(parallel)
 library(vcdExtra)
 library(plyr)
 library(dplyr)
+library(mice)
+library(VIM)
+
 
 cl <- detectCores() - 1
 
@@ -2430,3 +2433,234 @@ for (g in 1:length(grp.xtabs.names)) {
 
 save.image("silurodev.RData")
 
+
+
+#########################                          
+## multiple imputation ##
+#########################                          
+
+# community-only dataset
+commdat.raw <- data.frame(dat[,vertcols], dat[,invcols], dat[,plntcols])
+head(commdat.raw)
+str(commdat.raw)
+commdat.raw[sapply(commdat.raw, is.integer)] <- lapply(commdat.raw[sapply(commdat.raw, is.integer)], as.factor)
+
+# missing data
+aggr_plot <- aggr(commdat.raw, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(commdat.raw), cex.axis=.7, gap=3, ylab=c("histogram of missing data","pattern"))
+marginplot(commdat.raw[c(1,2)])
+aggr_plot$missings
+missings <- data.frame(aggr_plot$missings$Variable, round(100*aggr_plot$missings$Count/dim(commdat.raw)[1], 1))
+colnames(missings) <- c("var", "pcMiss")
+missings
+
+# multiple imputation
+md.pattern(commdat.raw)
+commdat.mice <- mice(commdat.raw, m=8, maxit=500, method="pmm", seed=101, defaultMethod = "logreg") # predictive mean matching
+summary(commdat.mice)
+str(commdat.mice)
+
+commdat.imp <- complete(commdat.mice)
+head(commdat.imp)
+dim(commdat.imp)
+aggr_plot.imp <- aggr(commdat.imp, col=c('navyblue','red'), numbers=TRUE, sortVars=TRUE, labels=names(commdat.imp), cex.axis=.7, gap=3, ylab=c("histogram of missing data","pattern"))
+
+commdatint.imp <- commdat.imp
+commdatint.imp[sapply(commdatint.imp, is.factor)] <- lapply(commdatint.imp[sapply(commdatint.imp, is.factor)], as.integer)
+str(commdatint.imp)
+
+summary(commdat.imp)
+
+# change 1 & 2 to 0 & 1
+commdatint01.imp <- commdatint.imp
+commdatint01.imp[commdatint01.imp==1] <- 0
+commdatint01.imp[commdatint01.imp==2] <- 1
+str(commdatint01.imp)
+
+plot(apply(dat[,c(vertcols,invcols,plntcols)], MARGIN=2, sum, na.rm=T), pch=19)
+plot(apply(commdatint01.imp, MARGIN=2, sum, na.rm=T), pch=19)
+
+# add extra columns from original dataset
+# ID
+commdatint01.imp$ID <- dat$ID
+
+# geology
+commdatint01.imp$Conglomerate <- dat$Conglomerate
+commdatint01.imp$Sandstone <- dat$Sandstone
+commdatint01.imp$Siltstone <- dat$Siltstone
+commdatint01.imp$Shale <- dat$Shale
+commdatint01.imp$Mudstone <- dat$Mudstone
+commdatint01.imp$Limestone <- dat$Limestone
+
+commdatint01.imp$X._conglomerate <- dat$X._conglomerate
+commdatint01.imp$X._sandstone <- dat$X._sandstone
+commdatint01.imp$X._siltstone <- dat$X._siltstone
+commdatint01.imp$X._shale <- dat$X._shale
+commdatint01.imp$X._mudstone <- dat$X._mudstone
+commdatint01.imp$X._limestone <- dat$X._limestone
+
+commdatint01.imp$Dominant <- dat$Dominant
+commdatint01.imp$Dominant <- dat$Dominant
+commdatint01.imp$geol.comb <- geol.comb
+
+# age/period/time
+commdatint01.imp$Age <- dat$Age
+commdatint01.imp$Period <- dat$Period
+commdatint01.imp$FAD <- dat$FAD
+commdatint01.imp$LAD <- dat$LAD
+commdatint01.imp$percat <- percat
+
+
+# redo analyses
+##############################################################################
+## permutation analysis of variance, replacing epoch with age estimates
+## permutation analysis of variance (Gower index)
+## stochastic loop to select dominant geology class randomly
+# combine taxa, geology, period
+ageyrimp <- apply(commdatint01.imp[,c(which(colnames(commdatint01.imp)=="FAD"), which(colnames(commdatint01.imp)=="LAD"))],
+               MARGIN=1, mean, na.rm=T)
+
+dat.reclass2imp <- data.frame("ID"=commdatint01.imp$ID, "ageyr"=ageyrimp, "geolcat"=commdatint01.imp$geol.comb, commdatint01.imp[,taxa.sub])
+head(dat.reclass2imp)
+dat.reclass.red2imp <- dat.reclass2imp[-which(is.na(dat.reclass2imp$ageyr)==T | is.na(dat.reclass2imp$geolcat)==T),]
+head(dat.reclass.red2imp)
+str(dat.reclass.red2imp)
+dim(dat.reclass.red2imp)
+table(dat.reclass.red2imp$geolcat)
+
+plot(apply(dat.reclass.red2[,-c(1:3)], MARGIN=2, sum, na.rm=T), pch=19)
+plot(apply(dat.reclass.red2imp[,-c(1:3)], MARGIN=2, sum, na.rm=T), pch=19)
+
+## run permutation linear models for community presence/absence data
+pergeo.reclass2imp <- dat.reclass.red2imp[,2:3]
+
+iter <- 1000
+itdiv <- iter/10
+permut <- 10000
+st.time <- Sys.time()
+
+fact.levels <- c("geolcatcng", "geolcatsnd", "geolcatslt", "geolcatshl", "geolcatmud", "geolcatlim")
+factn <- length(fact.levels)
+
+factlev.pmat <- factlev.R2mat <- matrix(data=NA, nrow=iter, ncol=factn)
+colnames(factlev.R2mat) <- fact.levels
+colnames(factlev.pmat) <- fact.levels
+p.mat <- R2.mat <- matrix(data=NA, nrow=iter, ncol=3)
+
+for (s in 1:iter) {
+  
+  # choose 'dominant' geo class randomly
+  pergeo.reclass.it <- pergeo.reclass2imp
+  for (d in 1:dim(pergeo.reclass.it)[1]) {
+    geo.split.vec <- as.vector(str_split(gsub("(.{3})", "\\1 ", pergeo.reclass.it$geolcat[d]), " ")[[1]])
+    geosplit.vec <- geo.split.vec[-which(geo.split.vec == "")]
+    pergeo.reclass.it$geolcat[d] <- sample(geosplit.vec,1)
+  } # end d loop
+  
+  # resample dataset with replacement
+  resamp.sub <- sort(sample(1:dim(pergeo.reclass.it)[1], round(dim(pergeo.reclass.it)[1]/1.5,0), replace=F))
+  dat.resamp1 <- data.frame(pergeo.reclass.it, dat.reclass.red2imp[,-c(1:3)])
+  dat.resamp <- dat.resamp1[resamp.sub,] 
+  pergeo.resamp <- dat.resamp[,1:2]
+  tax.resamp <- dat.resamp[,3:dim(dat.resamp)[2]]
+  tax.resamp <- mutate_all(tax.resamp, function(x) as.integer(as.character(x)))
+  
+  # permutation analysis of variance (Cao index)
+  div.iter <- adonis2(tax.resamp ~ ageyr*geolcat, data = pergeo.resamp,
+                      permutations = permut, method="gower", binary=T, sqrt.dist=T, by="terms", parallel=cl)
+  div.iter2 <- adonis2(tax.resamp ~ ageyr*geolcat, data = pergeo.resamp,
+                       permutations = permut, method="gower", binary=T, sqrt.dist=T, by="onedf", parallel=cl)
+  
+  # store single-level p and R2 for factors
+  for (n in 1:factn) {
+    table.sub <- which(rownames(div.iter2[1]) == fact.levels[n])
+    if (length(table.sub) > 0) {
+      factlev.pmat[s, n] <- div.iter2$`Pr(>F)`[table.sub]
+      factlev.R2mat[s, n] <- div.iter2$R2[table.sub]
+    }
+  }
+  
+  # save pr(F) results
+  p.mat[s, ] <- c(div.iter$'Pr(>F)'[1], div.iter$'Pr(>F)'[2], div.iter$'Pr(>F)'[3])
+  R2.mat[s, ] <- c(div.iter$R2[1], div.iter$R2[2], div.iter$R2[3])
+  
+  if (s %% itdiv==0) print(s) 
+  
+} # end s
+
+end.time <- Sys.time()
+proc.time <- end.time - st.time
+proc.time
+
+# set CI lims
+# 0.67, 0.8, 0.95, 0.99
+# i.e., 0.3333, 0.2, 0.05, 0.01
+oneINx <- 20 # 3 # 5 # 20 # 100
+CI.prob <- 1/oneINx
+print(paste(round((1 - CI.prob)*100, 0), "% confidence interval", sep=""))
+up.lim <- (1-CI.prob/2)
+lo.lim <- 1 - up.lim
+
+## age
+# probabilities
+exp(median(log(p.mat[, 1])))
+print(c(exp(quantile(log(p.mat[, 1]), probs=lo.lim, na.rm=T)), exp(quantile(log(p.mat[, 1]), probs=up.lim, na.rm=T))))
+hist(log(p.mat[, 1]), main="", xlab="log age prob")
+abline(v=log(0.05), lty=2, lwd=2, col="red")
+abline(v=log(0.05), lty=1, lwd=3, col="red")
+abline(v=(median(log(p.mat[, 1]))), col="darkgreen", lwd=3, lty=1)
+abline(v=quantile(log(p.mat[, 1]), probs=lo.lim, na.rm=T), lwd=3, lty=3, col="purple")
+abline(v=quantile(log(p.mat[, 1]), probs=up.lim, na.rm=T), lwd=3, lty=3, col="purple")
+
+# R2
+exp(median(log(R2.mat[, 1])))
+print(c(exp(quantile(log(R2.mat[, 1]), probs=lo.lim, na.rm=T)), exp(quantile(log(R2.mat[, 1]), probs=up.lim, na.rm=T))))
+hist(log(R2.mat[, 1]), main="", xlab="log period R2")
+abline(v=(median(log(R2.mat[, 1]))), col="darkgreen", lwd=3, lty=1)
+abline(v=quantile(log(R2.mat[, 1]), probs=lo.lim, na.rm=T), lwd=3, lty=3, col="purple")
+abline(v=quantile(log(R2.mat[, 1]), probs=up.lim, na.rm=T), lwd=3, lty=3, col="purple")
+
+## geology 
+# probabilities
+exp(median(log(p.mat[, 2])))
+print(c(exp(quantile(log(p.mat[, 2]), probs=lo.lim, na.rm=T)), exp(quantile(log(p.mat[, 2]), probs=up.lim, na.rm=T))))
+hist(log(p.mat[, 2]), main="", xlab="log geol prob")
+abline(v=log(0.05), lty=2, lwd=2, col="red")
+abline(v=log(0.05), lty=1, lwd=3, col="red")
+abline(v=(median(log(p.mat[, 2]))), col="darkgreen", lwd=3, lty=1)
+abline(v=quantile(log(p.mat[, 2]), probs=lo.lim, na.rm=T), lwd=3, lty=3, col="purple")
+abline(v=quantile(log(p.mat[, 2]), probs=up.lim, na.rm=T), lwd=3, lty=3, col="purple")
+
+# R2
+exp(median(log(R2.mat[, 2])))
+print(c(exp(quantile(log(R2.mat[, 2]), probs=lo.lim, na.rm=T)), exp(quantile(log(R2.mat[, 2]), probs=up.lim, na.rm=T))))
+hist(log(R2.mat[, 2]), main="", xlab="log period R2")
+abline(v=(median(log(R2.mat[, 2]))), col="darkgreen", lwd=3, lty=1)
+abline(v=quantile(log(R2.mat[, 2]), probs=lo.lim, na.rm=T), lwd=3, lty=3, col="purple")
+abline(v=quantile(log(R2.mat[, 2]), probs=up.lim, na.rm=T), lwd=3, lty=3, col="purple")
+
+## interaction 
+# probabilities
+exp(median(log(p.mat[, 3])))
+print(c(exp(quantile(log(p.mat[, 3]), probs=lo.lim, na.rm=T)), exp(quantile(log(p.mat[, 3]), probs=up.lim, na.rm=T))))
+hist(log(p.mat[, 3]), main="", xlab="log age*geology prob")
+abline(v=log(0.05), lty=1, lwd=3, col="red")
+abline(v=(median(log(p.mat[, 3]))), col="darkgreen", lwd=3, lty=1)
+abline(v=quantile(log(p.mat[, 3]), probs=lo.lim, na.rm=T), lwd=3, lty=3, col="purple")
+abline(v=quantile(log(p.mat[, 3]), probs=up.lim, na.rm=T), lwd=3, lty=3, col="purple")
+
+# R2
+exp(median(log(R2.mat[, 3])))
+print(c(exp(quantile(log(R2.mat[, 3]), probs=lo.lim, na.rm=T)), exp(quantile(log(R2.mat[, 3]), probs=up.lim, na.rm=T))))
+hist(log(R2.mat[, 3]), main="", xlab="log period R2")
+abline(v=(median(log(R2.mat[, 3]))), col="darkgreen", lwd=3, lty=1)
+abline(v=quantile(log(R2.mat[, 3]), probs=lo.lim, na.rm=T), lwd=3, lty=3, col="purple")
+abline(v=quantile(log(R2.mat[, 3]), probs=up.lim, na.rm=T), lwd=3, lty=3, col="purple")
+
+# single factor-level median probabilities & R2
+fact.levels.sname <- c("cng", "snd", "slt", "shl", "mud", "lim")
+factlev.out <- data.frame(fact.levels.sname, apply(factlev.pmat, MARGIN=2, median, na.rm=T),
+                          apply(factlev.R2mat, MARGIN=2, median, na.rm=T))
+colnames(factlev.out) <- c("factlev", "p", "R2")
+rownames(factlev.out) <- NULL
+factlev.sort <- factlev.out[order(factlev.out[,3],decreasing=T),]
+factlev.sort
