@@ -1,6 +1,6 @@
 # Siluro-Devonian Communities
 <img align="right" src="www/ageyr perm.jpg" width="400" style="margin-top: 20px"></a>
-Lithofacies and temporal variation predict composition of Siluro-Devonian vertebrate, invertebrate, and plant communities
+Lithofacies and temporal variation predict composition of Siluro-Devonian vertebrate, invertebrate, and plant communities. Includes multiple imputation of community data using chained equations.
 <br>
 <br>
 lead: <a href="https://globalecologyflinders.com/people/#DIRECTOR">Corey Bradshaw</a><br>
@@ -22,7 +22,7 @@ While Siluro-Devonian vertebrate communities have been well-described, co-variat
 <img align="right" src="www/FAMsites.png" width="400" style="margin-top: 20px"></a>
 
 ## R libraries
-<code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>
+<code>performance</code>, <code>sjPlot</code>, <code>lme4</code>, <code>ggplot2</code>, <code>stringr</code>, <code>vegan</code>, <code>parallel</code>, <code>vcdExtra</code>, <code>plyr</code>, <code>dplyr</code>, <code>mice</code>, <code>VIM</code>
 
 ## GPlately
 Install <code><a href="https://github.com/GPlates/gplately?tab=readme-ov-file">GPlately</a></code>, a Python interface to accelerate spatio-temporal data analysis leveraging <code><a href="https://www.gplates.org/docs/pygplates/index.html">pyGPlates</a></code> and <code><a href="https://github.com/EarthByte/PlateTectonicTools">PlateTectonicTools</a></code>
